@@ -17,4 +17,12 @@ export class MediasRepository {
   findAll() {
     return this.prisma.media.findMany();
   }
+
+  findById(id: number) {
+    return this.prisma.media.findUnique({ where: { id } });
+  }
+
+  update(id: number, body: CreateMediaDto) {
+    return this.prisma.media.update({ data: body, where: { id } });
+  }
 }
