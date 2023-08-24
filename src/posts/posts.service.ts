@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Post } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
@@ -28,7 +29,7 @@ export class PostsService {
     return this.postsRepository.remove(id);
   }
 
-  private formatParams(post) {
+  private formatParams(post: Post): CreatePostDto {
     delete post.createdAt;
     delete post.updatedAt;
     !post.image && delete post.image;
