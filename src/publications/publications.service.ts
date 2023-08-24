@@ -25,8 +25,11 @@ export class PublicationsService {
     return publication;
   }
 
-  async findAll() {
-    const publications = await this.publicationsRepository.findAll();
+  async findAll(published?: boolean, after?: Date) {
+    const publications = await this.publicationsRepository.findAll(
+      published,
+      after,
+    );
     return publications.map(({ id, mediaId, postId, date }) => {
       return { id, mediaId, postId, date };
     });

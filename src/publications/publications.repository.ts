@@ -11,8 +11,15 @@ export class PublicationsRepository {
     return this.prisma.publication.create({ data: { date, mediaId, postId } });
   }
 
-  findAll() {
-    return this.prisma.publication.findMany();
+  findAll(published: boolean = false, after?: Date) {
+    const today = new Date();
+    let query: { where?: { date?: { lt?: Date; gt?: Date } } } = {};
+    (published || after) && (query = { where: { date: {} } });
+
+    published && (query.where.date = { lt: today });
+    after && (query.where.date = { lt: today, gt: after });
+
+    return this.prisma.publication.findMany(query);
   }
 
   findOne(id: number) {
