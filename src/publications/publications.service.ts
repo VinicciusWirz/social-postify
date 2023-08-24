@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MediasService } from '../medias/medias.service';
 import { PostsService } from '../posts/posts.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
@@ -35,8 +35,11 @@ export class PublicationsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} publication`;
+  async findOne(idInput: number) {
+    const publication = await this.publicationsRepository.findOne(idInput);
+    if (!publication) throw new NotFoundException();
+    const { id, mediaId, postId, date } = publication;
+    return { id, mediaId, postId, date };
   }
 
   update(id: number, updatePublicationDto: CreatePublicationDto) {
