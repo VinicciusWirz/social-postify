@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Post } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -20,8 +20,10 @@ export class PostsService {
     });
   }
 
-  findOne(id: number) {
-    return this.postsRepository.findOne(id);
+  async findOne(id: number) {
+    const post = await this.postsRepository.findOne(id);
+    if (!post) throw new NotFoundException();
+    return [this.formatParams(post)];
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
