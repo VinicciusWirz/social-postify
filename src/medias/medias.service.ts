@@ -46,8 +46,8 @@ export class MediasService {
     return updateMedia;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} media`;
+  async remove(id: number) {
+    return await this.mediasRepository.remove(id);
   }
 
   private async findCombination(body: CreateMediaDto) {

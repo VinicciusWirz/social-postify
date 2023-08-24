@@ -25,4 +25,8 @@ export class MediasRepository {
   update(id: number, body: CreateMediaDto) {
     return this.prisma.media.update({ data: body, where: { id } });
   }
+
+  remove(id: number) {
+    return this.prisma.media.delete({ where: { id } });
+  }
 }

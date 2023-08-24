@@ -38,9 +38,8 @@ export class MediasController {
     return await this.mediasService.update(id, body);
   }
 
-  //TODO: Delete route dependencies
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mediasService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.mediasService.remove(id);
   }
 }
