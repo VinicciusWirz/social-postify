@@ -13,8 +13,11 @@ export class PostsService {
     return this.formatParams(post);
   }
 
-  findAll() {
-    return this.postsRepository.findAll();
+  async findAll() {
+    const postList = await this.postsRepository.findAll();
+    return postList.map((post) => {
+      return this.formatParams(post);
+    });
   }
 
   findOne(id: number) {
