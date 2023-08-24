@@ -8,8 +8,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  async create(@Body() body: CreatePostDto) {
+    return await this.postsService.create(body);
   }
 
   @Get()
