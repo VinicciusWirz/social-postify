@@ -58,8 +58,9 @@ export class PublicationsService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} publication`;
+  async remove(id: number) {
+    await this.publicationsRepository.findOne(id);
+    return await this.publicationsRepository.remove(id);
   }
 
   private async findDependencies(mediaId: number, postId: number) {

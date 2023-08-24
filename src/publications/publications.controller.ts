@@ -48,7 +48,7 @@ export class PublicationsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.publicationsService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.publicationsService.remove(id);
   }
 }
