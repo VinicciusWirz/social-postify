@@ -1,15 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
-import { UpdatePublicationDto } from './dto/update-publication.dto';
 
 @Controller('publications')
 export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto) {
-    return this.publicationsService.create(createPublicationDto);
+  async create(@Body() createPublicationDto: CreatePublicationDto) {
+    return await this.publicationsService.create(createPublicationDto);
   }
 
   @Get()
@@ -23,7 +22,7 @@ export class PublicationsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
+  update(@Param('id') id: string, @Body() updatePublicationDto: CreatePublicationDto) {
     return this.publicationsService.update(+id, updatePublicationDto);
   }
 
