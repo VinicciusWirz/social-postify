@@ -25,8 +25,11 @@ export class PublicationsService {
     return publication;
   }
 
-  findAll() {
-    return `This action returns all publications`;
+  async findAll() {
+    const publications = await this.publicationsRepository.findAll();
+    return publications.map(({ id, mediaId, postId, date }) => {
+      return { id, mediaId, postId, date };
+    });
   }
 
   findOne(id: number) {
