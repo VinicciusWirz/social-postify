@@ -9,6 +9,7 @@ import {
   Query,
   ParseBoolPipe,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
@@ -38,12 +39,12 @@ export class PublicationsController {
     return await this.publicationsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePublicationDto: CreatePublicationDto,
   ) {
-    return this.publicationsService.update(+id, updatePublicationDto);
+    return await this.publicationsService.update(id, updatePublicationDto);
   }
 
   @Delete(':id')

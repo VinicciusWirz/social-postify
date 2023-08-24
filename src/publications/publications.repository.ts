@@ -26,8 +26,12 @@ export class PublicationsRepository {
     return this.prisma.publication.findUnique({ where: { id } });
   }
 
-  update(id: number, updatePublicationDto: UpdatePublicationDto) {
-    return `This action updates a #${id} publication`;
+  update(id: number, body: UpdatePublicationDto) {
+    const { date, mediaId, postId } = body;
+    return this.prisma.publication.update({
+      where: { id },
+      data: { date, mediaId, postId },
+    });
   }
 
   remove(id: number) {

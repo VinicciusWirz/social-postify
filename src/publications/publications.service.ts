@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { MediasService } from '../medias/medias.service';
 import { PostsService } from '../posts/posts.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
@@ -15,8 +19,7 @@ export class PublicationsService {
 
   async create(body: CreatePublicationDto) {
     const { mediaId, postId, date } = body;
-    await this.mediasService.findOne(body.mediaId);
-    await this.postsService.findOne(body.postId);
+    await this.findDependencies(body.mediaId, body.postId);
     const publication = await this.publicationsRepository.create(
       new UpdatePublicationDto(mediaId, postId, date),
     );
@@ -42,11 +45,25 @@ export class PublicationsService {
     return { id, mediaId, postId, date };
   }
 
-  update(id: number, updatePublicationDto: CreatePublicationDto) {
-    return `This action updates a #${id} publication`;
+  async update(id: number, body: CreatePublicationDto) {
+    await this.findDependencies(body.mediaId, body.postId);
+    const { date } = await this.findOne(id);
+    const today = new Date();
+    const published = date.getTime() < today.getTime();
+
+    if (published) throw new ForbiddenException();
+    return await this.publicationsRepository.update(
+      id,
+      new UpdatePublicationDto(body.mediaId, body.postId, body.date),
+    );
   }
 
   remove(id: number) {
     return `This action removes a #${id} publication`;
+  }
+
+  private async findDependencies(mediaId: number, postId: number) {
+    await this.mediasService.findOne(mediaId);
+    await this.postsService.findOne(postId);
   }
 }
