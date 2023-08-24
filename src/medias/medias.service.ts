@@ -12,8 +12,13 @@ export class MediasService {
     return await this.mediasRepository.create(body);
   }
 
-  findAll() {
-    return `This action returns all medias`;
+  async findAll() {
+    const medias = await this.mediasRepository.findAll();
+    medias.forEach((m) => {
+      delete m.createdAt;
+      delete m.updatedAt;
+    });
+    return medias;
   }
 
   findOne(id: number) {

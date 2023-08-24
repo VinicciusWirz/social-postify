@@ -13,8 +13,8 @@ export class MediasController {
   }
 
   @Get()
-  findAll() {
-    return this.mediasService.findAll();
+  async findAll() {
+    return await this.mediasService.findAll();
   }
 
   @Get(':id')

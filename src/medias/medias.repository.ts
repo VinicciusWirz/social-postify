@@ -13,4 +13,8 @@ export class MediasRepository {
   findCombination(body: CreateMediaDto) {
     return this.prisma.media.findFirst({ where: body });
   }
+
+  findAll() {
+    return this.prisma.media.findMany();
+  }
 }
