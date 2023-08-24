@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostsRepository {
@@ -19,8 +18,12 @@ export class PostsRepository {
     return this.prisma.post.findUnique({ where: { id } });
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  update(id: number, body: CreatePostDto) {
+    const { text, title, image } = body;
+    return this.prisma.post.update({
+      data: { text, title, image: image || null },
+      where: { id },
+    });
   }
 
   remove(id: number) {
