@@ -10,7 +10,7 @@ datasource db {
 model Media {
   id            Int           @default(autoincrement()) @id
   title         String
-  text          String
+  username      String
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   Publication   Publication[]

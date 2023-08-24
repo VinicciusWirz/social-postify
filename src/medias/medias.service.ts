@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
+import { MediasRepository } from './medias.repository';
 
 @Injectable()
 export class MediasService {
-  create(createMediaDto: CreateMediaDto) {
-    return 'This action adds a new media';
+  constructor(private readonly mediasRepository: MediasRepository) {}
+  async create(body: CreateMediaDto) {
+    const media = await this.findCombination(body);
+    if (media) throw new ConflictException();
+    return await this.mediasRepository.create(body);
   }
 
   findAll() {
@@ -22,5 +26,9 @@ export class MediasService {
 
   remove(id: number) {
     return `This action removes a #${id} media`;
+  }
+
+  private async findCombination(body: CreateMediaDto) {
+    return await this.mediasRepository.findCombination(body);
   }
 }

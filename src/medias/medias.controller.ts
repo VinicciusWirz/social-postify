@@ -8,8 +8,8 @@ export class MediasController {
   constructor(private readonly mediasService: MediasService) {}
 
   @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediasService.create(createMediaDto);
+  async create(@Body() createMediaDto: CreateMediaDto) {
+    return await this.mediasService.create(createMediaDto);
   }
 
   @Get()
