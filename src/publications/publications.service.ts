@@ -63,7 +63,7 @@ export class PublicationsService {
   }
 
   async remove(id: number) {
-    await this.publicationsRepository.findOne(id);
+    await this.findOne(id);
     return await this.publicationsRepository.remove(id);
   }
 
