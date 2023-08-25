@@ -54,8 +54,8 @@ export class PublicationsService {
     const { date } = await this.findOne(id);
     const today = new Date();
     const published = date.getTime() < today.getTime();
-
     if (published) throw new ForbiddenException();
+
     return await this.publicationsRepository.update(
       id,
       new UpdatePublicationDto(body.mediaId, body.postId, body.date),
@@ -63,8 +63,12 @@ export class PublicationsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
-    return await this.publicationsRepository.remove(id);
+    try {
+      await this.publicationsRepository.remove(id);
+      return `Publication ${id} deleted`;
+    } catch (error) {
+      if (error.code === 'P2025') throw new NotFoundException();
+    }
   }
 
   private async findDependencies(mediaId: number, postId: number) {

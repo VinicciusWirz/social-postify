@@ -54,7 +54,6 @@ export class MediasService {
     } catch (error) {
       if (error.code === 'P2003') throw new ForbiddenException();
       if (error.code === 'P2025') throw new NotFoundException();
-      console.log({ ...error });
     }
   }
 
