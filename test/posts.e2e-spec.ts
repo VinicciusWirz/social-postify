@@ -5,6 +5,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { PrismaModule } from '../src/prisma/prisma.module';
 import { PostsModule } from '../src/posts/posts.module';
 import { PostsFactory } from './factories/posts.factory';
+import { PublicationsFactory } from './factories/publications.factory';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -135,6 +136,29 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  //TODO: DELETE /posts
-  describe('DELETE /posts', () => {});
+  describe('DELETE /posts', () => {
+    it('should delete given id', async () => {
+      //setup
+      const { id } = await PostsFactory.build(prisma);
+
+      await request(app.getHttpServer())
+        .delete(`/posts/${id}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should result in 404 when given id does not exist', async () => {
+      await request(app.getHttpServer())
+        .delete(`/posts/1`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should result in 403 when post belongs to a publication', async () => {
+      //setup
+      const { postId } = await PublicationsFactory.build(prisma);
+
+      await request(app.getHttpServer())
+        .delete(`/posts/${postId}`)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+  });
 });

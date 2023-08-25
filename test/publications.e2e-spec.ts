@@ -222,16 +222,17 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  //TODO: DELETE /publications
   describe('DELETE /publications', () => {
     it('should delete given id', async () => {
+      //setup
       const { id } = await PublicationsFactory.build(prisma);
+
       await request(app.getHttpServer())
         .delete(`/publications/${id}`)
         .expect(HttpStatus.OK);
     });
-    it('should delete given id', async () => {
-      const { id } = await PublicationsFactory.build(prisma);
+
+    it('should result in 404 when given id does not exist', async () => {
       await request(app.getHttpServer())
         .delete(`/publications/1`)
         .expect(HttpStatus.NOT_FOUND);
