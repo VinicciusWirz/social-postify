@@ -18,8 +18,7 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     prisma = await moduleFixture.resolve(PrismaService);
-    await prisma.publication.deleteMany();
-    await prisma.post.deleteMany();
+
     await prisma.media.deleteMany();
 
     app.useGlobalPipes(new ValidationPipe());
@@ -76,16 +75,14 @@ describe('AppController (e2e)', () => {
 
   describe('POST /medias', () => {
     it('should return register a new media', async () => {
-      const media = { title: 'LinkedIn', username: 'https://www.linkedin.com' };
-
       const response = await request(app.getHttpServer())
         .post(`/medias`)
-        .send(media);
+        .send(validBody);
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.body).toEqual({
         id: expect.any(Number),
-        title: media.title,
-        username: media.username,
+        title: validBody.title,
+        username: validBody.username,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       });
@@ -152,7 +149,7 @@ describe('AppController (e2e)', () => {
       const { title, username } = await MediasFactory.build(prisma);
 
       return await request(app.getHttpServer())
-        .post(`/medias/${id}`)
+        .put(`/medias/${id}`)
         .send({ title, username })
         .expect(HttpStatus.CONFLICT);
     });
