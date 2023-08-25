@@ -47,7 +47,9 @@ export class MediasService {
   }
 
   async remove(id: number) {
-    return await this.mediasRepository.remove(id);
+    await this.findOne(id);
+    await this.mediasRepository.remove(id);
+    return `Media ${id} deleted`;
   }
 
   private async findCombination(body: CreateMediaDto) {
