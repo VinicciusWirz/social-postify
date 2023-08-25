@@ -94,6 +94,16 @@ describe('AppController (e2e)', () => {
         date: expect.any(String),
       });
     });
+
+    it('should result 400 if after is not a valid date', async () => {
+      //setup
+      const date = 'random string';
+
+      const response = await request(app.getHttpServer()).get(
+        `/publications?after=${date}`,
+      );
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    });
   });
 
   describe('GET /publications/:id', () => {
