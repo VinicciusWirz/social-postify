@@ -6,7 +6,7 @@ export class MediasFactory {
     return await prisma.media.create({
       data: {
         title: faker.company.name(),
-        username: faker.internet.url(),
+        username: faker.person.firstName(),
       },
     });
   }

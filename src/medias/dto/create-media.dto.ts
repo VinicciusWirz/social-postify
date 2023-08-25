@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateMediaDto {
   @IsNotEmpty()
@@ -6,6 +6,6 @@ export class CreateMediaDto {
   title: string;
 
   @IsNotEmpty()
-  @IsUrl()
+  @IsString()
   username: string;
 }

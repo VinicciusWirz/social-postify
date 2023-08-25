@@ -10,7 +10,7 @@ import { PublicationsFactory } from './factories/publications.factory';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
-  const validBody = { title: 'LinkedIn', username: 'https://www.linkedin.com' };
+  const validBody = { title: 'LinkedIn', username: 'test-username' };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -158,7 +158,6 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  //TODO: DELETE /medias
   describe('DELETE /medias', () => {
     it('should delete given id', async () => {
       //setup
