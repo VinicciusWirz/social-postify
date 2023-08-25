@@ -1,5 +1,7 @@
 import {
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,7 +15,9 @@ import { PublicationsRepository } from './publications.repository';
 export class PublicationsService {
   constructor(
     private readonly publicationsRepository: PublicationsRepository,
+    @Inject(forwardRef(() => MediasService))
     private readonly mediasService: MediasService,
+    @Inject(forwardRef(() => PostsService))
     private readonly postsService: PostsService,
   ) {}
 

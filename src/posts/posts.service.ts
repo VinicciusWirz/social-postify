@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Post } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsRepository } from './posts.repository';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly postsRepository: PostsRepository) {}
+  constructor(
+    private readonly postsRepository: PostsRepository,
+  ) {}
 
   async create(body: CreatePostDto) {
     const post = await this.postsRepository.create(body);
@@ -31,8 +36,10 @@ export class PostsService {
     return [this.formatParams(post)];
   }
 
-  remove(id: number) {
-    return this.postsRepository.remove(id);
+  async remove(id: number) {
+    await this.findOne(id);
+    await this.postsRepository.remove(id);
+    return `Post ${id} deleted`;
   }
 
   private formatParams(post: Post): CreatePostDto {

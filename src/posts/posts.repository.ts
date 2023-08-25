@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
@@ -26,7 +26,12 @@ export class PostsRepository {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    try {
+      return await this.prisma.post.delete({ where: { id } });
+    } catch (error) {
+      if (error.meta?.field_name.includes('fkey')) throw new ForbiddenException();
+      console.log({ ...error });
+    }
   }
 }

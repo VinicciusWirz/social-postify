@@ -31,13 +31,15 @@ export class PostsController {
   }
 
   @Put(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() body: CreatePostDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: CreatePostDto,
+  ) {
     return await this.postsService.update(id, body);
   }
 
-  //TODO: Delete route dependencies
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.remove(id);
   }
 }
