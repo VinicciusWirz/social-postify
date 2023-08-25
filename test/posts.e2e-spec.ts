@@ -19,6 +19,8 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     prisma = await moduleFixture.resolve(PrismaService);
 
+    await prisma.publication.deleteMany();
+    await prisma.media.deleteMany();
     await prisma.post.deleteMany();
 
     app.useGlobalPipes(new ValidationPipe());
