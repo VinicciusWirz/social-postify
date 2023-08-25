@@ -5,6 +5,7 @@ import { MediasModule } from '../src/medias/medias.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { PrismaModule } from '../src/prisma/prisma.module';
 import { MediasFactory } from './factories/media.factory';
+import { PublicationsFactory } from './factories/publications.factory';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -158,5 +159,29 @@ describe('AppController (e2e)', () => {
   });
 
   //TODO: DELETE /medias
-  describe('DELETE /medias', () => {});
+  describe('DELETE /medias', () => {
+    it('should delete given id', async () => {
+      //setup
+      const { id } = await MediasFactory.build(prisma);
+
+      await request(app.getHttpServer())
+        .delete(`/medias/${id}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should result in 404 when given id does not exist', async () => {
+      await request(app.getHttpServer())
+        .delete(`/medias/1`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should result in 403 when media belongs to a publication', async () => {
+      //setup
+      const { mediaId } = await PublicationsFactory.build(prisma);
+
+      await request(app.getHttpServer())
+        .delete(`/medias/${mediaId}`)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+  });
 });
