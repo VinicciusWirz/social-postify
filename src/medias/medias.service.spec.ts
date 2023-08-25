@@ -9,7 +9,6 @@ import { MediasService } from './medias.service';
 describe('MediasService', () => {
   let service: MediasService;
   let repository: MediasRepository;
-  let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,7 +17,6 @@ describe('MediasService', () => {
 
     service = module.get<MediasService>(MediasService);
     repository = module.get<MediasRepository>(MediasRepository);
-    prisma = module.get<PrismaService>(PrismaService);
   });
 
   describe('Find all medias', () => {

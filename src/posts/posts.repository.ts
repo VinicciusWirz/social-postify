@@ -26,12 +26,9 @@ export class PostsRepository {
     });
   }
 
-  async remove(id: number) {
-    try {
-      return await this.prisma.post.delete({ where: { id } });
-    } catch (error) {
-      if (error.meta?.field_name.includes('fkey')) throw new ForbiddenException();
-      console.log({ ...error });
-    }
+   remove(id: number) {
+
+      return  this.prisma.post.delete({ where: { id } });
+
   }
 }
