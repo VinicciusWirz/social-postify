@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -47,9 +48,14 @@ export class MediasService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
-    await this.mediasRepository.remove(id);
-    return `Media ${id} deleted`;
+    try {
+      await this.mediasRepository.remove(id);
+      return `Media ${id} deleted`;
+    } catch (error) {
+      if (error.code === 'P2003') throw new ForbiddenException();
+      if (error.code === 'P2025') throw new NotFoundException();
+      console.log({ ...error });
+    }
   }
 
   private async findCombination(body: CreateMediaDto) {

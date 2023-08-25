@@ -173,34 +173,24 @@ describe('MediasService', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(repository, 'findById').mockResolvedValueOnce(serviceResponse);
       jest.spyOn(repository, 'remove').mockResolvedValueOnce(serviceResponse);
 
       const deleteMedia = await service.remove(1);
       expect(deleteMedia).toEqual(`Media 1 deleted`);
     });
 
-    it('should throw not found when id does not exist', () => {
-      jest.spyOn(repository, 'findById').mockResolvedValueOnce(null);
+    it('should throw not found error', () => {
+      jest.spyOn(repository, 'remove').mockRejectedValueOnce({ code: 'P2025' });
 
-      const deleteMedia = service.remove(1);
-      expect(deleteMedia).rejects.toThrow(new NotFoundException());
+      const updatedPost = service.remove(1);
+      expect(updatedPost).rejects.toThrow(new NotFoundException());
     });
 
-    it('should throw conflict when combination is found', () => {
-      const dto = new CreateMediaDto();
-      dto.title = 'mock-title';
-      dto.username = 'mock-username';
+    it('should throw forbidden error', () => {
+      jest.spyOn(repository, 'remove').mockRejectedValueOnce({ code: 'P2003' });
 
-      jest.spyOn(repository, 'findById').mockResolvedValueOnce(null);
-
-      const updatedMedia = service.remove(1);
-      expect(updatedMedia).rejects.toThrow(new NotFoundException());
-    });
-
-    //TODO: Implement prisma constraint
-    it('should throw conflict when combination is found', () => {
-      expect(true).toBe(true);
+      const updatedPost = service.remove(1);
+      expect(updatedPost).rejects.toThrow(new ForbiddenException());
     });
   });
 });

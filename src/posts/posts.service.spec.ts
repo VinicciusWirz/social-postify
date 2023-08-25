@@ -172,12 +172,14 @@ describe('PostsService', () => {
       const post = await service.remove(1);
       expect(post).toEqual('Post 1 deleted');
     });
+
     it('should throw not found error', () => {
       jest.spyOn(repository, 'remove').mockRejectedValueOnce({ code: 'P2025' });
 
       const updatedPost = service.remove(1);
       expect(updatedPost).rejects.toThrow(new NotFoundException());
     });
+
     it('should throw forbidden error', () => {
       jest.spyOn(repository, 'remove').mockRejectedValueOnce({ code: 'P2003' });
 
