@@ -9,23 +9,25 @@ import { PublicationsFactory } from './factories/publications.factory';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
+  let prisma: PrismaService = new PrismaService();
   const validBody = { title: 'LinkedIn', text: 'https://www.linkedin.com' };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [PostsModule, PrismaModule],
-    }).compile();
+    })
+    .overrideProvider(PrismaService)
+    .useValue(prisma)
+    .compile();
 
-    app = moduleFixture.createNestApplication();
-    prisma = await moduleFixture.resolve(PrismaService);
+  app = moduleFixture.createNestApplication();
+  app.useGlobalPipes(new ValidationPipe());
 
-    await prisma.publication.deleteMany();
-    await prisma.media.deleteMany();
-    await prisma.post.deleteMany();
+  await prisma.publication.deleteMany();
+  await prisma.media.deleteMany();
+  await prisma.post.deleteMany();
 
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
+  await app.init();
   });
 
   describe('GET /posts', () => {

@@ -9,11 +9,15 @@ import { MediasService } from './medias.service';
 describe('MediasService', () => {
   let service: MediasService;
   let repository: MediasRepository;
+  let prisma: PrismaService = new PrismaService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [MediasService, MediasRepository, PrismaService],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prisma)
+      .compile();
 
     service = module.get<MediasService>(MediasService);
     repository = module.get<MediasRepository>(MediasRepository);

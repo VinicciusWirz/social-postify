@@ -8,11 +8,15 @@ import { PostsService } from './posts.service';
 describe('PostsService', () => {
   let service: PostsService;
   let repository: PostsRepository;
+  let prisma: PrismaService = new PrismaService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PostsService, PostsRepository, PrismaService],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prisma)
+      .compile();
 
     service = module.get<PostsService>(PostsService);
     repository = module.get<PostsRepository>(PostsRepository);

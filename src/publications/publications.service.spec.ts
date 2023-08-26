@@ -14,6 +14,7 @@ describe('PublicationsService', () => {
   let repository: PublicationsRepository;
   let mediasRepository: MediasRepository;
   let postsRepository: PostsRepository;
+  let prisma: PrismaService = new PrismaService();
 
   const dto = new CreatePublicationDto();
   dto.mediaId = 1;
@@ -29,9 +30,12 @@ describe('PublicationsService', () => {
         MediasRepository,
         PostsService,
         PostsRepository,
-        PrismaService,
+        PrismaService
       ],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prisma)
+      .compile();
 
     service = module.get<PublicationsService>(PublicationsService);
     repository = module.get<PublicationsRepository>(PublicationsRepository);
