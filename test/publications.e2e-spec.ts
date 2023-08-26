@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
   describe('GET /publications', () => {
     it('should return array of publications in database', async () => {
       //setup
-      const numberOfPublications = 2;
+      const numberOfPublications = 5;
       for (let i = 0; i < numberOfPublications; i++) {
         await PublicationsFactory.build(prisma);
       }
@@ -49,13 +49,13 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    it('should return empty array when no publications in database', async () => {
+    it('should return empty array when no publications exist in database', async () => {
       const response = await request(app.getHttpServer()).get('/publications');
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.body).toHaveLength(0);
     });
 
-    it('should return array of publications published in database', async () => {
+    it('should return array of published publications in database', async () => {
       //setup
       const published = await PublicationsFactory.build(prisma, true);
       const notPublished = await PublicationsFactory.build(prisma);
@@ -77,12 +77,21 @@ describe('AppController (e2e)', () => {
     it('should return array of publications published in database after certain date', async () => {
       //setup
       const date = '2023-05-03';
-      const published = await PublicationsFactory.build(
+      const publishedAfter = await PublicationsFactory.build(
         prisma,
         false,
         new Date('2023-05-05'),
       );
-      await PublicationsFactory.build(prisma, false, new Date('2023-05-02'));
+      const publishedBefore = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('2023-05-02'),
+      );
+      const notPublished = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('9999-05-02'),
+      );
 
       const response = await request(app.getHttpServer()).get(
         `/publications?after=${date}`,
@@ -90,16 +99,16 @@ describe('AppController (e2e)', () => {
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.body).toHaveLength(1);
       expect(response.body[0]).toEqual({
-        id: published.id,
-        mediaId: published.mediaId,
-        postId: published.postId,
+        id: publishedAfter.id,
+        mediaId: publishedAfter.mediaId,
+        postId: publishedAfter.postId,
         date: expect.any(String),
       });
     });
 
     it('should result 400 if after is not a valid date', async () => {
       //setup
-      const date = 'random string';
+      const date = 'Lorem ipsum';
 
       const response = await request(app.getHttpServer()).get(
         `/publications?after=${date}`,
@@ -111,8 +120,7 @@ describe('AppController (e2e)', () => {
   describe('GET /publications/:id', () => {
     it('should return the expected publication object', async () => {
       //setup
-      const { id, mediaId, postId, date } =
-        await PublicationsFactory.build(prisma);
+      const { id, mediaId, postId } = await PublicationsFactory.build(prisma);
 
       const response = await request(app.getHttpServer()).get(
         `/publications/${id}`,
@@ -128,7 +136,7 @@ describe('AppController (e2e)', () => {
 
     it("should result 404 if id doesn't exist", async () => {
       const response = await request(app.getHttpServer()).get(
-        `/publications/100`,
+        `/publications/1`,
       );
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
     });
@@ -142,7 +150,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('POST /publications', () => {
-    it('should return register a new publication', async () => {
+    it('should register a new publication', async () => {
       //setup
       const { id: mediaId } = await MediasFactory.build(prisma);
       const { id: postId } = await PostsFactory.build(prisma);
@@ -177,7 +185,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('PUT /publications', () => {
-    it('should return edit the existing publication', async () => {
+    it('should edit the existing publication', async () => {
       //setup
       const { id, mediaId, postId, date } =
         await PublicationsFactory.build(prisma);

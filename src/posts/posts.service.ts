@@ -30,7 +30,7 @@ export class PostsService {
     const post = await this.postsRepository.findOne(id);
     if (!post) throw new NotFoundException();
     const postFilterImage = this.filterImage(post);
-    return [FormattingHelper.removeDbDates(postFilterImage)];
+    return FormattingHelper.removeDbDates(postFilterImage);
   }
 
   async update(id: number, body: CreatePostDto) {

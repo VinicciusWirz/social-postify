@@ -53,25 +53,6 @@ describe('PostsService', () => {
   });
 
   describe('Find one post', () => {
-    it('should return expected post array', async () => {
-      const dto = new CreatePostDto();
-      dto.text = 'mock-text';
-      dto.title = 'mock-title';
-      delete dto.image;
-      jest.spyOn(repository, 'findOne').mockResolvedValueOnce({
-        id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        image: null,
-        title: dto.title,
-        text: dto.text,
-      });
-
-      const post = await service.findOne(1);
-      expect(post).toHaveLength(1);
-      expect(post[0]).toEqual({ id: 1, title: dto.title, text: dto.text });
-    });
-
     it('should return expected object', async () => {
       const dto = new CreatePostDto();
       dto.text = 'mock-text';
@@ -87,8 +68,7 @@ describe('PostsService', () => {
       });
 
       const post = await service.findOne(1);
-      expect(post).toHaveLength(1);
-      expect(post[0]).toEqual({ id: 1, title: dto.title, text: dto.text });
+      expect(post).toEqual({ id: 1, title: dto.title, text: dto.text });
     });
 
     it('should throw not found error', () => {

@@ -11,9 +11,10 @@ import { MediasRepository } from './medias.repository';
 @Injectable()
 export class MediasService {
   constructor(private readonly mediasRepository: MediasRepository) {}
+
   async create(body: CreateMediaDto) {
-    const media = await this.findCombination(body);
-    if (media) throw new ConflictException();
+    await this.findCombination(body);
+
     return await this.mediasRepository.create(body);
   }
 
@@ -29,15 +30,14 @@ export class MediasService {
     const media = await this.mediasRepository.findById(id);
     if (!media) throw new NotFoundException();
 
-    return [FormattingHelper.removeDbDates(media)];
+    return FormattingHelper.removeDbDates(media);
   }
 
   async update(id: number, body: CreateMediaDto) {
     const mediaById = await this.mediasRepository.findById(id);
     if (!mediaById) throw new NotFoundException();
 
-    const combinationExists = await this.findCombination(body);
-    if (combinationExists) throw new ConflictException();
+    await this.findCombination(body);
 
     const updateMedia = await this.mediasRepository.update(id, body);
 
@@ -55,6 +55,7 @@ export class MediasService {
   }
 
   private async findCombination(body: CreateMediaDto) {
-    return await this.mediasRepository.findCombination(body);
+    const combination = await this.mediasRepository.findCombination(body);
+    if (combination) throw new ConflictException();
   }
 }

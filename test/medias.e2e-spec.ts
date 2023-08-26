@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
   describe('GET /medias', () => {
     it('should return array of medias in database', async () => {
       //setup
-      const numberOfMedias = 2;
+      const numberOfMedias = 5;
       for (let i = 0; i < numberOfMedias; i++) {
         await MediasFactory.build(prisma);
       }
@@ -62,24 +62,22 @@ describe('AppController (e2e)', () => {
 
       const response = await request(app.getHttpServer()).get(`/medias/${id}`);
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.body).toEqual([{ id, title, username }]);
+      expect(response.body).toEqual({ id, title, username });
     });
 
     it("should result 404 if id doesn't exist", async () => {
-      //setup
-      const response = await request(app.getHttpServer()).get(`/medias/100`);
+      const response = await request(app.getHttpServer()).get(`/medias/1`);
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
     });
 
     it("should result 400 if id isn't a valid number", async () => {
-      //setup
       const response = await request(app.getHttpServer()).get(`/medias/A`);
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     });
   });
 
   describe('POST /medias', () => {
-    it('should return register a new media', async () => {
+    it('should register a new media', async () => {
       const response = await request(app.getHttpServer())
         .post(`/medias`)
         .send(validBody);
@@ -114,7 +112,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('PUT /medias', () => {
-    it('should return edit the existing media', async () => {
+    it('should edit the existing media', async () => {
       //setup
       const { id } = await MediasFactory.build(prisma);
 
@@ -143,7 +141,7 @@ describe('AppController (e2e)', () => {
 
     it('should result in 404 error when id does not exist', async () => {
       return request(app.getHttpServer())
-        .put(`/medias/100`)
+        .put(`/medias/1`)
         .send(validBody)
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -161,7 +159,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('DELETE /medias', () => {
-    it('should delete given id', async () => {
+    it('should delete media with given id', async () => {
       //setup
       const { id } = await MediasFactory.build(prisma);
 

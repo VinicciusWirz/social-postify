@@ -10,7 +10,10 @@ import { PublicationsFactory } from './factories/publications.factory';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService = new PrismaService();
-  const validBody = { title: 'LinkedIn', text: 'https://www.linkedin.com' };
+  const validBody = {
+    title: 'LinkedIn',
+    text: 'Lorem ipsum dolor sit amet...',
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -33,7 +36,7 @@ describe('AppController (e2e)', () => {
   describe('GET /posts', () => {
     it('should return array of posts in database', async () => {
       //setup
-      const numberOfPosts = 2;
+      const numberOfPosts = 5;
       for (let i = 0; i < numberOfPosts; i++) {
         await PostsFactory.build(prisma);
       }
@@ -63,24 +66,22 @@ describe('AppController (e2e)', () => {
 
       const response = await request(app.getHttpServer()).get(`/posts/${id}`);
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.body).toEqual([{ id, title, text, image }]);
+      expect(response.body).toEqual({ id, title, text, image });
     });
 
     it("should result 404 if id doesn't exist", async () => {
-      //setup
-      const response = await request(app.getHttpServer()).get(`/posts/100`);
+      const response = await request(app.getHttpServer()).get(`/posts/1`);
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
     });
 
     it("should result 400 if id isn't a valid number", async () => {
-      //setup
       const response = await request(app.getHttpServer()).get(`/posts/A`);
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     });
   });
 
   describe('POST /posts', () => {
-    it('should return register a new posts', async () => {
+    it('should register a new post', async () => {
       const response = await request(app.getHttpServer())
         .post(`/posts`)
         .send(validBody);
@@ -89,6 +90,25 @@ describe('AppController (e2e)', () => {
         id: expect.any(Number),
         title: validBody.title,
         text: validBody.text,
+      });
+    });
+
+    it('should register a new post with image', async () => {
+      const validBodyWithImage = {
+        ...validBody,
+        image:
+          'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post(`/posts`)
+        .send(validBodyWithImage);
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+      expect(response.body).toEqual({
+        id: expect.any(Number),
+        title: validBodyWithImage.title,
+        text: validBodyWithImage.text,
+        image: validBodyWithImage.image,
       });
     });
 
@@ -101,7 +121,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('PUT /posts', () => {
-    it('should return edit the existing post', async () => {
+    it('should edit the existing post', async () => {
       //setup
       const { id } = await PostsFactory.build(prisma);
 
@@ -130,7 +150,7 @@ describe('AppController (e2e)', () => {
 
     it('should result in 404 error when id does not exist', async () => {
       return request(app.getHttpServer())
-        .put(`/posts/100`)
+        .put(`/posts/1`)
         .send(validBody)
         .expect(HttpStatus.NOT_FOUND);
     });

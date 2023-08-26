@@ -63,9 +63,11 @@ describe('MediasService', () => {
         updatedAt: new Date(),
       });
       const medias = await service.findOne(1);
-      expect(medias).toEqual([
-        { id: 1, title: 'mock-title', username: 'mock-username' },
-      ]);
+      expect(medias).toEqual({
+        id: 1,
+        title: 'mock-title',
+        username: 'mock-username',
+      });
     });
   });
 
