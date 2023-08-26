@@ -142,7 +142,7 @@ describe('PostsService', () => {
       jest.spyOn(repository, 'update').mockResolvedValueOnce(serverResponse);
 
       const updatedPost = await service.update(1, dto);
-      expect(updatedPost).toEqual([{ id: 1, ...dto }]);
+      expect(updatedPost).toEqual({ id: 1, ...dto });
     });
     it('should throw not found error', () => {
       const dto = new CreatePostDto();

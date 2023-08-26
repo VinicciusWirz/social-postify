@@ -16,18 +16,18 @@ describe('AppController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [PostsModule, PrismaModule],
     })
-    .overrideProvider(PrismaService)
-    .useValue(prisma)
-    .compile();
+      .overrideProvider(PrismaService)
+      .useValue(prisma)
+      .compile();
 
-  app = moduleFixture.createNestApplication();
-  app.useGlobalPipes(new ValidationPipe());
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
 
-  await prisma.publication.deleteMany();
-  await prisma.media.deleteMany();
-  await prisma.post.deleteMany();
+    await prisma.publication.deleteMany();
+    await prisma.media.deleteMany();
+    await prisma.post.deleteMany();
 
-  await app.init();
+    await app.init();
   });
 
   describe('GET /posts', () => {
@@ -109,13 +109,11 @@ describe('AppController (e2e)', () => {
         .put(`/posts/${id}`)
         .send(validBody);
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.body).toEqual([
-        {
-          id: expect.any(Number),
-          title: validBody.title,
-          text: validBody.text,
-        },
-      ]);
+      expect(response.body).toEqual({
+        id: expect.any(Number),
+        title: validBody.title,
+        text: validBody.text,
+      });
     });
 
     it('should result in 400 error when body is not valid', async () => {

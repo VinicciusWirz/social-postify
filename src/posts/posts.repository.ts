@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
@@ -26,9 +26,7 @@ export class PostsRepository {
     });
   }
 
-   remove(id: number) {
-
-      return  this.prisma.post.delete({ where: { id } });
-
+  remove(id: number) {
+    return this.prisma.post.delete({ where: { id } });
   }
 }

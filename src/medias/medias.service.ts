@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { FormattingHelper } from '../helpers/formatting.helper';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { MediasRepository } from './medias.repository';
 
@@ -18,9 +19,8 @@ export class MediasService {
 
   async findAll() {
     const medias = await this.mediasRepository.findAll();
-    medias.forEach((m) => {
-      delete m.createdAt;
-      delete m.updatedAt;
+    medias.forEach((media) => {
+      return FormattingHelper.removeDbDates(media);
     });
     return medias;
   }
@@ -28,9 +28,8 @@ export class MediasService {
   async findOne(id: number) {
     const media = await this.mediasRepository.findById(id);
     if (!media) throw new NotFoundException();
-    delete media.createdAt;
-    delete media.updatedAt;
-    return [media];
+
+    return [FormattingHelper.removeDbDates(media)];
   }
 
   async update(id: number, body: CreateMediaDto) {
@@ -41,10 +40,8 @@ export class MediasService {
     if (combinationExists) throw new ConflictException();
 
     const updateMedia = await this.mediasRepository.update(id, body);
-    delete updateMedia.createdAt;
-    delete updateMedia.updatedAt;
 
-    return updateMedia;
+    return FormattingHelper.removeDbDates(updateMedia);
   }
 
   async remove(id: number) {

@@ -5,6 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Publication } from '@prisma/client';
+import { FormattingHelper } from '../helpers/formatting.helper';
 import { MediasService } from '../medias/medias.service';
 import { PostsService } from '../posts/posts.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
@@ -27,9 +29,7 @@ export class PublicationsService {
     const publication = await this.publicationsRepository.create(
       new UpdatePublicationDto(mediaId, postId, date),
     );
-    delete publication.updatedAt;
-    delete publication.createdAt;
-    return publication;
+    return FormattingHelper.removeDbDates(publication);
   }
 
   async findAll(published?: boolean, after?: Date) {
@@ -37,8 +37,9 @@ export class PublicationsService {
       published,
       after,
     );
-    return publications.map(({ id, mediaId, postId, date }) => {
-      return { id, mediaId, postId, date };
+
+    return publications.map((publication) => {
+      return FormattingHelper.removeDbDates(publication);
     });
   }
 
@@ -46,7 +47,10 @@ export class PublicationsService {
     const publication = await this.publicationsRepository.findOne(idInput);
     if (!publication) throw new NotFoundException();
     const { id, mediaId, postId, date } = publication;
-    return { id, mediaId, postId, date };
+    return FormattingHelper.removeDbDates(publication) as Pick<
+      Publication,
+      'id' | 'date' | 'postId' | 'mediaId'
+    >;
   }
 
   async update(id: number, body: CreatePublicationDto) {

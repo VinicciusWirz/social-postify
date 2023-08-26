@@ -5,9 +5,16 @@ import { MediasModule } from './medias/medias.module';
 import { PostsModule } from './posts/posts.module';
 import { PublicationsModule } from './publications/publications.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { HelperModule } from './helpers/helpers.module';
 
 @Module({
-  imports: [MediasModule, PostsModule, PublicationsModule, PrismaModule],
+  imports: [
+    MediasModule,
+    PostsModule,
+    PublicationsModule,
+    PrismaModule,
+    HelperModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
