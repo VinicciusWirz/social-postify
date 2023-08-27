@@ -46,7 +46,6 @@ export class PublicationsService {
   async findOne(idInput: number) {
     const publication = await this.publicationsRepository.findOne(idInput);
     if (!publication) throw new NotFoundException();
-    const { id, mediaId, postId, date } = publication;
     return FormattingHelper.removeDbDates(publication) as Pick<
       Publication,
       'id' | 'date' | 'postId' | 'mediaId'

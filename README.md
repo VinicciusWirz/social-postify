@@ -13,7 +13,7 @@ You can setup your medias registering its **title** ("Facebook", "X", "Instagram
 You are able to plan your posts, registering the **title** ("Why you should have a guinea pig?"), a **text** ("This is why you should have a guinea pig...") and possibly an **image** in url format ("https://www.devnews.com/dead-dev.jpg"). 
 
 Then you will be able to associate a media with a post (by their ids) and the desired date you want to publish, with year-month-day format ("2023-08-21").
-You are able to filter publications that are already published and publications published after a certain date using the query params "published" (boolean) and "after" (yyyy-mm-dd), respectively
+You are able to filter publications that are already published and publications after a certain date using the query params "published" (boolean) and "after" (yyyy-mm-dd), respectively
 
 You are able to create, view, edit or delete any of the information you registered.
 

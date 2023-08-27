@@ -74,6 +74,38 @@ describe('AppController (e2e)', () => {
       });
     });
 
+    it('should return array of publications database after certain date', async () => {
+      //setup
+      const date = '2023-05-03';
+      const publishedAfter = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('2023-05-05'),
+      );
+      const publishedBefore = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('2023-05-02'),
+      );
+      const notPublished = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('9999-05-02'),
+      );
+
+      const response = await request(app.getHttpServer()).get(
+        `/publications?after=${date}&published=true`,
+      );
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.body).toHaveLength(1);
+      expect(response.body[0]).toEqual({
+        id: publishedAfter.id,
+        mediaId: publishedAfter.mediaId,
+        postId: publishedAfter.postId,
+        date: expect.any(String),
+      });
+    });
+
     it('should return array of publications published in database after certain date', async () => {
       //setup
       const date = '2023-05-03';
@@ -97,7 +129,7 @@ describe('AppController (e2e)', () => {
         `/publications?after=${date}`,
       );
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.body).toHaveLength(1);
+      expect(response.body).toHaveLength(2);
       expect(response.body[0]).toEqual({
         id: publishedAfter.id,
         mediaId: publishedAfter.mediaId,
