@@ -35,7 +35,8 @@ describe('AppController (e2e)', () => {
       //setup
       const numberOfPublications = 5;
       for (let i = 0; i < numberOfPublications; i++) {
-        await PublicationsFactory.build(prisma);
+        const randomPublishedDate = i % 2 === 0;
+        await PublicationsFactory.build(prisma, randomPublishedDate);
       }
 
       const response = await request(app.getHttpServer()).get('/publications');
@@ -74,7 +75,27 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    it('should return array of publications database after certain date', async () => {
+    it('should return array of unpublished publications in database', async () => {
+      //setup
+      const published = await PublicationsFactory.build(prisma, true);
+      const notPublished1 = await PublicationsFactory.build(prisma);
+      const notPublished2 = await PublicationsFactory.build(prisma);
+
+      const response = await request(app.getHttpServer()).get(
+        '/publications?published=false',
+      );
+
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.body).toHaveLength(2);
+      expect(response.body[0]).toEqual({
+        id: expect.any(Number),
+        mediaId: expect.any(Number),
+        postId: expect.any(Number),
+        date: expect.any(String),
+      });
+    });
+
+    it('should return array of publications published in database after certain date', async () => {
       //setup
       const date = '2023-05-03';
       const publishedAfter = await PublicationsFactory.build(
@@ -106,7 +127,7 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    it('should return array of publications published in database after certain date', async () => {
+    it('should return array of publications in database after certain date', async () => {
       //setup
       const date = '2023-05-03';
       const publishedAfter = await PublicationsFactory.build(
@@ -134,6 +155,38 @@ describe('AppController (e2e)', () => {
         id: publishedAfter.id,
         mediaId: publishedAfter.mediaId,
         postId: publishedAfter.postId,
+        date: expect.any(String),
+      });
+    });
+
+    it('should return array of unpublished publications in database after certain date', async () => {
+      //setup
+      const date = '2023-05-03';
+      const publishedBefore = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('2023-05-02'),
+      );
+      const expected1 = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('2023-05-05'),
+      );
+      const expected2 = await PublicationsFactory.build(
+        prisma,
+        false,
+        new Date('9999-05-02'),
+      );
+
+      const response = await request(app.getHttpServer()).get(
+        `/publications?after=${date}&published=false`,
+      );
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.body).toHaveLength(2);
+      expect(response.body[0]).toEqual({
+        id: expected1.id,
+        mediaId: expected1.mediaId,
+        postId: expected1.postId,
         date: expect.any(String),
       });
     });

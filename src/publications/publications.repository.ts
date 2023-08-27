@@ -16,7 +16,7 @@ export class PublicationsRepository {
       where: {
         date: {
           lt: published ? new Date() : undefined,
-          gte: after ? after : undefined,
+          gte: after ? after : published === false ? new Date() : undefined,
         },
       },
     });
